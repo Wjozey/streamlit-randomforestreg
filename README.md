@@ -12,3 +12,12 @@ The columns in the dataset are are follows:
 * Length3: Cross length in cm
 * Height: Height in cm
 * Width: Diagonal width in cm
+
+
+
+
+## Installation and Local Running
+
+```bash
+streamlit run main.py
+```
