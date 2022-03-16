@@ -1,19 +1,18 @@
+import streamlit as st
 import pandas as pd 
 import numpy as np
 import sklearn
-import streamlit as st
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split, GridSearchCV
 
 #columns: 
 # Weight: in grams
 # Lenght1, Lenght2, Lenght3: Different proportions in cm.
 # Height: in cm
 # Width: in cm
-# Species: The only categorical column.
+# Species: categorical column.
 
 
 header = st.container()
