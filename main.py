@@ -15,64 +15,50 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 # Species: categorical column.
 
 
-header = st.container()
-dataset = st.container()
-modelTraining = st.container()
+# Introduction
+st.write("""
+# Fish Weight Prediction App
 
+This app predicts the **Weight of fish** using a random forest regression model!
+""")
+st.write('---')
 
-
-@st.cache()
+# Load and preprocess data
+@st.cache
 def load_rename(dataset):
     dataset = pd.read_csv(dataset)
     dataset.rename(columns= {'Length1':'VerLen', 'Length2':'DiagLen', 'Length3':'CrossLen'}, inplace=True)
     dataset = dataset[['Species','VerLen','DiagLen','CrossLen','Height','Width','Weight']]
     return dataset
-    
 
+data = load_rename('Fish.csv')
 
+# Data exploration
+st.header('Fish Weight Estimation From Measurements')
+st.write('''The aim of this study is to estimate weight of the fish indivuduals from their measurements through using Random Forest regression model. 
+ The dataset is from [Kaggle]("https://www.kaggle.com/aungpyaeap/fish-market").''')
 
-with header:
-    st.write("""
-    # Fish Weight Prediction App
+st.subheader('Species distribution on the dataset')
+chart_data = data['Species'].value_counts()
+st.bar_chart(chart_data)
 
-    This app predicts the **Weight of fish**!
-    """)
-    st.write('---')
+st.subheader('Preview of dataset')
+st.write(data.head())
 
-with dataset:
-     st.header('Fish Weight Estimation From Measurements')
-     st.write('''The aim of this study is to estimate weight of the fish indivuduals from their measurements through using Random Forest regression model. 
-     The dataset from [Kaggle]("https://www.kaggle.com/aungpyaeap/fish-market")''')
-     data = load_rename('Fish.csv')
-     
-     
-     st.subheader('Species distribution on the dataset')
-     chart_data = data['Species'].value_counts()
-     st.bar_chart(chart_data)
-     
-     st.subheader('Preview of dataset')
-     st.write(data.head())
+# Model training and evaluation
+st.header('Train and evaluate the model')
 
-with modelTraining:
-    st.header('Train the model!')
-    st.text('Select the hyperparameters of the model')
+# Select model hyperparameters
+st.sidebar.text('Select the hyperparameters of the model')
 
-    sel_col, disp_col = st.columns(2)
+max_depth = st.sidebar.slider('What should be the max_depth of the model?', min_value=1, max_value=10, value=5, step=1)
 
-    max_depth = sel_col.slider('What should be the max_depth of the model?', min_value=1, max_value=10, value=5, step=1)
+n_estimators = st.sidebar.selectbox('How many trees should there be?', options=[100, 200, 300, 'No limits'])
 
-    n_estimators = sel_col.selectbox('How many trees should there be?', options=[100, 200, 300, 'No limits'])
+input_feature = st.sidebar.selectbox("Input feature", data.columns)
 
-    sel_col.text('List of input features')
-    
-    feature_cols = data.columns
-    input_feature = sel_col.selectbox("Input feature", feature_cols)
-
-    if n_estimators == 'No limits':
-        regr = RandomForestRegressor(max_depth=max_depth)
-
-    else:
-        regr = RandomForestRegressor(max_depth=max_depth, n_estimators=n_estimators)
+if input_feature is None:
+    st.warning('Please select an input feature')
 
 
     Dummydata = pd.get_dummies(data, columns = ['Species'], drop_first=True)
